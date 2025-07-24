@@ -1,0 +1,43 @@
+{
+    "deviceId": "3301001326", 
+    "plantCode": "3301",
+    "deviceType": "MACHINE",
+    "opcServerUrl": "opc.tcp://192.168.1.115:49320",
+    "tags": [
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Pressure_Steam",
+            "tagDataName": "Pressure_Steam",
+            "unit": "Bar"
+        },
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.PV_Temp1",
+            "tagDataName": "Temperature_1",
+            "unit": "°C"
+        },
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.PV_Temp2",
+            "tagDataName": "Temperature_2",
+            "unit": "°C"
+        },
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.PV_Temp3",
+            "tagDataName": "Temperature_3",
+            "unit": "°C"
+        },
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.PV_Temp4",
+            "tagDataName": "Temperature_4",
+            "unit": "°C"
+        },
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.PV_Temp5",
+            "tagDataName": "Temperature_5",
+            "unit": "°C"
+        },
+        {
+            "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.PV_Temp6",
+            "tagDataName": "Temperature_6",
+            "unit": "°C"
+        }
+    ]
+}

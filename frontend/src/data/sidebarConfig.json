@@ -1,0 +1,153 @@
+{
+  "mainNavigation": [
+    {
+      "id": "home",
+      "label": "หน้าแรก",
+      "icon": "🏠",
+      "path": "home"
+    },
+    {
+      "id": "dashboard",
+      "label": "ข้อมูล",
+      "icon": "📊",
+      "path": "dashboard"
+    },
+    {
+      "id": "opcua-status",
+      "label": "OPC UA Status",
+      "icon": "🔗",
+      "path": "opcua"
+    },
+    {
+      "id": "maintenance",
+      "label": "งานและซ่อมดัด",
+      "icon": "🔧",
+      "path": "maintenance"
+    },
+    {
+      "id": "spare-parts",
+      "label": "งานซ่อม",
+      "icon": "⚙️",
+      "subItems": [
+        {
+          "id": "spare-parts-list",
+          "label": "รายการอะไหล่",
+          "icon": "📋",
+          "path": "spare-parts"
+        }
+      ]
+    },
+    {
+      "id": "reports",
+      "label": "ตรวจสอบงาน",
+      "icon": "📄",
+      "path": "reports"
+    },
+    {
+      "id": "equipment",
+      "label": "สถาน",
+      "icon": "🛠️",
+      "path": "equipment"
+    },
+    {
+      "id": "work-orders",
+      "label": "รายงาน",
+      "icon": "📋",
+      "subItems": [
+        {
+          "id": "tracking",
+          "label": "Tracking",
+          "icon": "📍",
+          "path": "tracking"
+        },
+        {
+          "id": "report-all-workorder-gm",
+          "label": "Report All WorkOrder GM",
+          "icon": "📊",
+          "path": "report-workorder-gm"
+        },
+        {
+          "id": "report-all-work-order-sub-contract",
+          "label": "Report All Work Order Sub Contract",
+          "icon": "📈",
+          "path": "report-sub-contract"
+        },
+        {
+          "id": "spare-part-report",
+          "label": "Spare Part Report",
+          "icon": "🔩",
+          "path": "spare-part-report"
+        },
+        {
+          "id": "weekly-performance-graph",
+          "label": "Weekly Performance Graph",
+          "icon": "📊",
+          "path": "weekly-performance"
+        },
+        {
+          "id": "review-quotation",
+          "label": "Review Quotation",
+          "icon": "💰",
+          "path": "review-quotation"
+        },
+        {
+          "id": "weekly-summary-graph",
+          "label": "Weekly Summary Graph",
+          "icon": "📈",
+          "path": "weekly-summary"
+        },
+        {
+          "id": "import-file",
+          "label": "Import file",
+          "icon": "📁",
+          "path": "import-file"
+        },
+        {
+          "id": "machine-activity-dashboard",
+          "label": "Machine Activity Dashboard",
+          "icon": "🖥️",
+          "path": "machine-dashboard"
+        },
+        {
+          "id": "dashboard-performance",
+          "label": "Dashboard การ ซ่อม (พร้อมกราฟ)",
+          "icon": "📊",
+          "path": "dashboard-performance"
+        },
+        {
+          "id": "maintenance-report",
+          "label": "รายงานซ่อม",
+          "icon": "📝",
+          "path": "maintenance-report"
+        },
+        {
+          "id": "cost-report",
+          "label": "รายงานค่าใช้จ่าย",
+          "icon": "💵",
+          "path": "cost-report"
+        }
+      ]
+    },
+    {
+      "id": "settings",
+      "label": "ตั้งค่าระบบ",
+      "icon": "⚙️",
+      "path": "settings"
+    },
+    {
+      "id": "logout",
+      "label": "ออกจากระบบ",
+      "icon": "🚪",
+      "path": "logout"
+    }
+  ],
+  "pages": [
+    
+  ]
+}
+
+
+
+
+
+

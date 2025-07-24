@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+@layer components {
+  .transaction-item {
+    @apply p-3 rounded-lg bg-gray-700/50 transition-all duration-300 border-l-4 border-transparent mb-2;
+  }
+  
+  .transaction-item:hover {
+    @apply bg-gray-700 scale-105 border-l-green-500;
+  }
+}

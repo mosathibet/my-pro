@@ -10,7 +10,26 @@
       "id": "dashboard",
       "label": "ข้อมูล",
       "icon": "📊",
-      "path": "dashboard"
+      "path": [
+        {
+          "id": "spare-parts-list",
+          "label": "รายการอะไหล่",
+          "icon": "📋",
+          "path": "spare-parts"
+        },
+        {
+          "id": "dashboard-performance",
+          "label": "Dashboard การ ซ่อม (พร้อมกราฟ)",
+          "icon": "📈",
+          "path": "dashboard-performance"
+        },
+        {
+          "id": "dashboard-performance",
+          "label": "Dashboard การ ซ่อม (พร้อมกราฟ)",
+          "icon": "📈",
+          "path": "dashboard-performance"
+        }
+      ]
     },
     {
       "id": "opcua-status",

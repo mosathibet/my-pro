@@ -150,15 +150,52 @@ const RealtimeChart = ({ darkMode }) => {
   };
 
   const handleRealtimeData = (data) => {
-    if (!data.tagDataItems) return;
+    // Log the incoming data to debug
+    console.log('Chart received data:', data);
+    
+    // Check if data has the expected structure
+    if (!data.tagDataItems && !data.value) {
+      console.warn('Unexpected data format:', data);
+      return;
+    }
 
-    const timestamp = new Date(data.dataDateTime);
+    const timestamp = new Date(data.dataDateTime || data.timestamp);
     
     setChartData(prevData => {
       const newData = { ...prevData };
       
-      data.tagDataItems.forEach(tag => {
-        const tagName = tag.tagDataName;
+      // Handle array of tag data items
+      if (data.tagDataItems) {
+        data.tagDataItems.forEach(tag => {
+          const tagName = tag.tagDataName;
+          
+          if (!newData[tagName]) {
+            const color = getTagDisplayColor(tagName);
+            newData[tagName] = {
+              label: tagName,
+              data: [],
+              borderColor: color,
+              backgroundColor: color.replace('rgb', 'rgba').replace(')', ', 0.1)'),
+              tension: 0.3,
+              fill: false,
+              pointRadius: 1,
+              pointHoverRadius: 4,
+            };
+          }
+          
+          newData[tagName].data.push({
+            x: timestamp,
+            y: typeof tag.value === 'number' ? tag.value : parseFloat(tag.value) || 0
+          });
+          
+          if (newData[tagName].data.length > maxDataPoints) {
+            newData[tagName].data = newData[tagName].data.slice(-maxDataPoints);
+          }
+        });
+      } 
+      // Handle single tag data
+      else if (data.tagDataName || data.nodeId) {
+        const tagName = data.tagDataName || data.nodeId;
         
         if (!newData[tagName]) {
           const color = getTagDisplayColor(tagName);
@@ -176,22 +213,31 @@ const RealtimeChart = ({ darkMode }) => {
         
         newData[tagName].data.push({
           x: timestamp,
-          y: typeof tag.value === 'number' ? tag.value : parseFloat(tag.value) || 0
+          y: typeof data.value === 'number' ? data.value : parseFloat(data.value) || 0
         });
         
         if (newData[tagName].data.length > maxDataPoints) {
           newData[tagName].data = newData[tagName].data.slice(-maxDataPoints);
         }
-      });
+      }
       
       return newData;
     });
 
-    const newTags = data.tagDataItems.map(tag => tag.tagDataName);
-    setAvailableTags(prev => {
-      const combined = [...new Set([...prev, ...newTags])];
-      return combined;
-    });
+    // Update available tags
+    if (data.tagDataItems) {
+      const newTags = data.tagDataItems.map(tag => tag.tagDataName);
+      setAvailableTags(prev => {
+        const combined = [...new Set([...prev, ...newTags])];
+        return combined;
+      });
+    } else if (data.tagDataName || data.nodeId) {
+      const tagName = data.tagDataName || data.nodeId;
+      setAvailableTags(prev => {
+        if (prev.includes(tagName)) return prev;
+        return [...prev, tagName];
+      });
+    }
   };
 
   // Load historical data
@@ -646,6 +692,7 @@ const RealtimeChart = ({ darkMode }) => {
 };
 
 export default RealtimeChart;
+
 
 
 

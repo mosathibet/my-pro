@@ -10,24 +10,24 @@
       "id": "dashboard",
       "label": "ข้อมูล",
       "icon": "📊",
-      "path": [
+      "subItems" :[
         {
-          "id": "spare-parts-list",
-          "label": "รายการอะไหล่",
-          "icon": "📋",
-          "path": "spare-parts"
+          "id": "dashboard-continue-binder",
+          "label": "Continue Binder",
+          "icon": "📊",
+          "path": "dashboard"
         },
         {
-          "id": "dashboard-performance",
-          "label": "Dashboard การ ซ่อม (พร้อมกราฟ)",
+          "id": "dashboard-spiral-oven",
+          "label": "Spiral Oven",
           "icon": "📈",
-          "path": "dashboard-performance"
+          "path": "dashboard-spiral-oven"
         },
         {
-          "id": "dashboard-performance",
-          "label": "Dashboard การ ซ่อม (พร้อมกราฟ)",
-          "icon": "📈",
-          "path": "dashboard-performance"
+          "id": "dashboard-maintenance",
+          "label": "Dashboard ซ่อม",
+          "icon": "🔧",
+          "path": "dashboard-maintenance"
         }
       ]
     },

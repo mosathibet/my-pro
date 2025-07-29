@@ -41,7 +41,7 @@ function App() {
             darkMode={darkMode}
           />
           
-          <main className={`transition-all duration-300 pt-24 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+          <main className={`transition-all duration-300 pt-16 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard darkMode={darkMode} />} />

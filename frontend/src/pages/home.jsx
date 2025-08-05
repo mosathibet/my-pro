@@ -1,137 +1,241 @@
-import React, { useState, useEffect } from 'react';
-import FilterBar from '../components/FilterBar';
-import CardValue from '../components/CardValue';
-import machineStatusService from '../services/machineStatus';
+import React, { useState, useEffect, useRef } from 'react';
 
-function Dashboard({ darkMode }) {
-  // Local filter states for Dashboard
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState('all');
-  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
-  const [timeRange, setTimeRange] = useState({ startTime: '', endTime: '' });
+// OPC UA service - replace mock with real connection
+const machineStatusService = {
+  getServerInfo: () => ({ url: 'opc.tcp://192.168.1.115:49320' }),
+  
+  // Connect to OPC UA server and read node values
+  async connectAndReadNodes(nodeIds) {
+    try {
+      const response = await fetch('/api/opcua/read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          serverUrl: 'opc.tcp://192.168.1.115:49320',
+          nodeIds: nodeIds 
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to read OPC UA nodes:', error);
+      throw error;
+    }
+  }
+};
 
-  // Grid status state - now connected to OPC UA
-  const [gridStatus, setGridStatus] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+function Home({ darkMode }) {
+  const [connectionStatus, setConnectionStatus] = useState('connecting');
   const [connectionError, setConnectionError] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [isLoading, setIsLoading] = useState(true);
+  const [gridStatus, setGridStatus] = useState({});
+  const [realTimeData, setRealTimeData] = useState({});
+  const wsRef = useRef(null);
 
-  // Initialize machine status service
-  useEffect(() => {
-    let unsubscribe;
-
-    const initializeMachineStatus = async () => {
-      try {
-        setIsLoading(true);
-        setConnectionError(null);
+  // WebSocket connection
+  const connectWebSocket = () => {
+    try {
+      wsRef.current = new WebSocket('ws://localhost:8080');
+      
+      wsRef.current.onopen = () => {
+        console.log('Connected to WebSocket server');
+      };
+      
+      wsRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Received real-time data:', data);
         
-        // Try to connect to OPC UA server first
-        await machineStatusService.connectToOPCUA();
-        setConnectionStatus(machineStatusService.getConnectionStatus());
-        
-        // Subscribe to status updates
-        unsubscribe = machineStatusService.subscribe((status) => {
-          setGridStatus(status);
-          setConnectionError(null);
-        });
-
-        // Initial status read
-        const initialStatus = await machineStatusService.readAllMachineStatus();
-        setGridStatus(initialStatus);
-        
-        // Start polling every 5 seconds
-        machineStatusService.startPolling(5000);
-        
-        setIsLoading(false);
-
-      } catch (error) {
-        console.error('Failed to initialize machine status:', error);
-        setConnectionError(error.message);
-        setConnectionStatus('error');
-        setIsLoading(false);
-        
-        // Still try to get cached/offline status
-        const offlineStatus = machineStatusService.getCurrentStatus();
-        if (Object.keys(offlineStatus).length > 0) {
-          setGridStatus(offlineStatus);
+        if (data.type !== 'connection') {
+          setRealTimeData(prev => ({
+            ...prev,
+            [`${data.serverId}-${data.nodeId}`]: data
+          }));
+          
+          // Update grid status with real-time data
+          updateGridStatusWithRealTimeData(data);
         }
-      }
-    };
-
-    initializeMachineStatus();
-    
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-      machineStatusService.stopPolling();
-    };
-  }, []);
-
-  const handleSearch = () => {
-    console.log('Dashboard search with filters:', {
-      selectedYear,
-      selectedMonth,
-      dateRange,
-      timeRange
-    });
-  };
-
-  const handleClear = () => {
-    setSelectedYear(new Date().getFullYear());
-    setSelectedMonth('all');
-    setDateRange({ startDate: '', endDate: '' });
-    setTimeRange({ startTime: '', endTime: '' });
-    console.log('Dashboard filters cleared');
-  };
-
-  const filterProps = {
-    darkMode,
-    selectedYear,
-    setSelectedYear,
-    selectedMonth,
-    setSelectedMonth,
-    dateRange,
-    setDateRange,
-    timeRange,
-    setTimeRange,
-    onSearch: handleSearch,
-    onClear: handleClear,
-    compact: false
-  };
-
-  // Get connection status color
-  const getConnectionStatusColor = () => {
-    switch (connectionStatus) {
-      case 'connected':
-        return 'bg-green-100 border-green-400 text-green-700';
-      case 'error':
-        return 'bg-red-100 border-red-400 text-red-700';
-      default:
-        return 'bg-yellow-100 border-yellow-400 text-yellow-700';
+      };
+      
+      wsRef.current.onclose = () => {
+        console.log('WebSocket connection closed');
+        // Reconnect after 3 seconds
+        setTimeout(() => {
+          console.log('Attempting to reconnect...');
+          connectWebSocket();
+        }, 3000);
+      };
+      
+      wsRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    } catch (error) {
+      console.error('Failed to create WebSocket connection:', error);
     }
   };
 
-  return (
-    <div className={`p-6 min-h-screen transition-colors duration-200 ${
-      darkMode 
-        ? 'bg-gray-900 text-white' 
-        : 'bg-gray-100 text-gray-900'
-    }`}>
-      {/* Header with FilterBar */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className={`text-3xl font-bold ${
-          darkMode ? 'text-white' : 'text-gray-900'
-        }`}>
-          Home
-        </h1>
-        <div className="w-100">
-          <FilterBar {...filterProps} />
-        </div>
-      </div>
+  // Update grid status with real-time data
+  const updateGridStatusWithRealTimeData = (data) => {
+    setGridStatus(prev => {
+      const updated = { ...prev };
+      
+      // Map nodeId to machine
+      if (data.nodeId === 'ns=2;s=PLC_SIEMENS.BINDER_1.LINE1.Automatic_Mode') {
+        if (updated.machine1) {
+          updated.machine1 = {
+            ...updated.machine1,
+            value: data.value,
+            online: data.value === true,
+            lastUpdate: new Date(data.timestamp || data.dataDateTime),
+            error: null
+          };
+        }
+      } else if (data.nodeId === 'ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Automatic_Mode') {
+        if (updated.machine2) {
+          updated.machine2 = {
+            ...updated.machine2,
+            value: data.value,
+            online: data.value === true,
+            lastUpdate: new Date(data.timestamp || data.dataDateTime),
+            error: null
+          };
+        }
+      }
+      
+      return updated;
+    });
+  };
 
+  // Function to read real OPC UA data
+  const readMachineStatus = async () => {
+    try {
+      setConnectionStatus('connecting');
+      setConnectionError(null);
+      
+      const nodeIds = [
+        'ns=2;s=PLC_SIEMENS.BINDER_1.LINE1.Automatic_Mode',
+        'ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Automatic_Mode'
+      ];
+      
+      console.log('Attempting to read nodes:', nodeIds);
+      
+      const response = await fetch('/api/opcua/read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          serverUrl: 'opc.tcp://192.168.1.115:49320',
+          nodeIds: nodeIds 
+        })
+      });
+      
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('API Response:', result);
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Unknown error');
+      }
+      
+      const data = result.data;
+      console.log('Node data:', data);
+      
+      const updatedGridStatus = {
+        machine1: {
+          name: 'BINDER 1',
+          online: data[0]?.statusCode === 'Good' && data[0]?.value === true,
+          nodeId: nodeIds[0],
+          value: data[0]?.value,
+          unit: '',
+          lastUpdate: new Date(),
+          error: data[0]?.statusCode !== 'Good' ? data[0]?.statusCode : null,
+          position: { top: '20%', left: '10%', width: '15%', height: '20%' }
+        },
+        machine2: {
+          name: 'BINDER 2', 
+          online: data[1]?.statusCode === 'Good' && data[1]?.value === true,
+          nodeId: nodeIds[1],
+          value: data[1]?.value,
+          unit: '',
+          lastUpdate: new Date(),
+          error: data[1]?.statusCode !== 'Good' ? data[1]?.statusCode : null,
+          position: { top: '20%', left: '30%', width: '15%', height: '20%' }
+        }
+      };
+
+      console.log('Updated grid status:', updatedGridStatus);
+      setGridStatus(updatedGridStatus);
+      setConnectionStatus('connected');
+      setIsLoading(false);
+      
+    } catch (error) {
+      console.error('Error reading machine status:', error);
+      setConnectionError(error.message);
+      setConnectionStatus('error');
+      setIsLoading(false);
+      
+      // Set offline status when connection fails
+      const offlineGridStatus = {
+        machine1: {
+          name: 'BINDER 1',
+          online: false,
+          nodeId: 'ns=2;s=PLC_SIEMENS.BINDER_1.LINE1.Automatic_Mode',
+          value: null,
+          unit: '',
+          lastUpdate: new Date(),
+          error: 'Connection failed',
+          position: { top: '20%', left: '10%', width: '15%', height: '20%' }
+        },
+        machine2: {
+          name: 'BINDER 2', 
+          online: false,
+          nodeId: 'ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Automatic_Mode',
+          value: null,
+          unit: '',
+          lastUpdate: new Date(),
+          error: 'Connection failed',
+          position: { top: '20%', left: '30%', width: '15%', height: '20%' }
+        }
+      };
+      setGridStatus(offlineGridStatus);
+    }
+  };
+
+  useEffect(() => {
+    // Connect to WebSocket for real-time updates
+    connectWebSocket();
+    
+    // Read initial machine status
+    readMachineStatus();
+    
+    // Set up periodic refresh every 30 seconds (less frequent since we have real-time data)
+    const interval = setInterval(readMachineStatus, 30000);
+    
+    return () => {
+      clearInterval(interval);
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
+
+  return (
+    <div className="p-6">
       {/* Connection Status */}
-      <div className={`mb-4 p-3 rounded border ${getConnectionStatusColor()}`}>
+      <div className={`mb-4 p-3 rounded-lg shadow-lg ${
+        darkMode ? 'bg-gray-800' : 'bg-white'
+      }`}>
         <div className="flex justify-between items-center">
           <span>
             OPC UA Server: {connectionStatus === 'connected' ? '🟢 Connected' : connectionStatus === 'error' ? '🔴 Error' : '🟡 Connecting...'}
@@ -285,14 +389,7 @@ function Dashboard({ darkMode }) {
   );
 }
 
-export default Dashboard;
-
-
-
-
-
-
-
+export default Home;
 
 
 

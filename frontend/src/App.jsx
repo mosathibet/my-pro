@@ -44,7 +44,7 @@ function App() {
           
           <main className={`transition-all duration-300 pt-16 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
             <Routes>
-              <Route path="/" element={<Navigate to="/" replace />} />
+              <Route path="/" element={<Navigate to="/home" replace />} />
               <Route path="/home" element={<Home darkMode={darkMode} />} />
               <Route path="/dashboard" element={<Dashboard darkMode={darkMode} />} />
               <Route path="/maintenance" element={<Forms darkMode={darkMode} />} />

@@ -1,61 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function Forms() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-  };
-
+function Documents() {
   return (
     <div className="dashboard-content">
       <div className="breadcrumb">
-        <span>📝 Forms</span>
+        <span>📄 Documents</span>
       </div>
 
-      <div className="form-container">
-        <h2>Contact Form</h2>
-        <form onSubmit={handleSubmit} className="contact-form">
-          <div className="form-group">
-            <label>Full Name</label>
-            <input 
-              type="text" 
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              placeholder="Enter your full name"
-            />
+      <div className="page-header">
+        <h2>Document Management</h2>
+        <button className="btn-primary">+ Add Document</button>
+      </div>
+
+      <div className="documents-grid">
+        <div className="document-card">
+          <div className="doc-icon">📄</div>
+          <h4>Project Report.pdf</h4>
+          <p>Modified: 2 hours ago</p>
+          <div className="doc-actions">
+            <button>View</button>
+            <button>Download</button>
+            <button>Delete</button>
           </div>
-          
-          <div className="form-group">
-            <label>Email Address</label>
-            <input 
-              type="email" 
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              placeholder="Enter your email"
-            />
+        </div>
+        
+        <div className="document-card">
+          <div className="doc-icon">📊</div>
+          <h4>Sales Analysis.xlsx</h4>
+          <p>Modified: 1 day ago</p>
+          <div className="doc-actions">
+            <button>View</button>
+            <button>Download</button>
+            <button>Delete</button>
           </div>
-          
-          <div className="form-group">
-            <label>Message</label>
-            <textarea 
-              value={formData.message}
-              onChange={(e) => setFormData({...formData, message: e.target.value})}
-              placeholder="Enter your message"
-              rows="5"
-            ></textarea>
+        </div>
+
+        <div className="document-card">
+          <div className="doc-icon">📝</div>
+          <h4>Meeting Notes.docx</h4>
+          <p>Modified: 3 days ago</p>
+          <div className="doc-actions">
+            <button>View</button>
+            <button>Download</button>
+            <button>Delete</button>
           </div>
-          
-          <button type="submit" className="btn-primary">Submit Form</button>
-        </form>
+        </div>
       </div>
     </div>
   );
 }
 
-export default Forms;
+export default Documents;

@@ -77,6 +77,38 @@ function Dashboard({ darkMode }) {
       status: 'Good',
       icon: '📊',
       timestamp: new Date()
+    },
+    {
+      title: 'Emails Sent',
+      value: '12,361',
+      unit: '',
+      status: 'Good',
+      icon: '📧',
+      timestamp: new Date()
+    },
+    {
+      title: 'Sales Obtained',
+      value: '431,225',
+      unit: '$',
+      status: 'Good',
+      icon: '💰',
+      timestamp: new Date()
+    },
+    {
+      title: 'New Clients',
+      value: '32,441',
+      unit: '',
+      status: 'Good',
+      icon: '👥',
+      timestamp: new Date()
+    },
+    {
+      title: 'Traffic Received',
+      value: '1,325,134',
+      unit: '',
+      status: 'Good',
+      icon: '📊',
+      timestamp: new Date()
     }
   ];
 

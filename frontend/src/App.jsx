@@ -12,6 +12,7 @@ import Documents from './pages/Documents';
 import Icons from './pages/Icons';
 import Login from './pages/Login';
 import OPCUAStatus from './pages/OPCUAStatus';
+import Home from './pages/Home';
 import './index.css';
 
 function App() {
@@ -43,7 +44,8 @@ function App() {
           
           <main className={`transition-all duration-300 pt-16 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<Navigate to="/" replace />} />
+              <Route path="/home" element={<Home darkMode={darkMode} />} />
               <Route path="/dashboard" element={<Dashboard darkMode={darkMode} />} />
               <Route path="/maintenance" element={<Forms darkMode={darkMode} />} />
               <Route path="/spare-parts" element={<Tables darkMode={darkMode} />} />

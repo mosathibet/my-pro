@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = '';
 
 class OPCUAService {
   async getLatestReadings(serverId, limit = 100) {
@@ -53,4 +53,5 @@ class OPCUAService {
 }
 
 export default new OPCUAService();
+
 

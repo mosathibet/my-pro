@@ -2,7 +2,7 @@
     "deviceId": "3301001326", 
     "plantCode": "3301",
     "deviceType": "MACHINE",
-    "opcServerUrl": "opc.tcp://192.168.1.115:49320",
+    "opcServerUrl": "opc.tcp://192.168.1.105:49320",
     "tags": [
         {
             "nodeId": "ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Pressure_Steam",

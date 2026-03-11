@@ -16,7 +16,7 @@ function OPCUAStatus({ darkMode }) {
     loadStatus();
     
     // Connect to WebSocket for real-time updates
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('ws://localhost:3001');
     
     ws.onopen = () => {
       console.log('Connected to WebSocket server');
@@ -473,6 +473,7 @@ function OPCUAStatus({ darkMode }) {
 }
 
 export default OPCUAStatus;
+
 
 
 

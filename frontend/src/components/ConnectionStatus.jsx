@@ -20,7 +20,7 @@ const ConnectionStatus = ({ darkMode }) => {
   const handleHealthCheck = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/opcua/health-check');
+      const response = await fetch('/api/opcua/health-check');
       const result = await response.json();
       console.log('Health check result:', result);
       await fetchConnectionLogs(); // Refresh logs

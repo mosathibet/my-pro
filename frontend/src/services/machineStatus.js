@@ -13,19 +13,19 @@ const MACHINE_CONFIG = {
     unit: '°C'
   },
   cutting: {
-    nodeId: 'ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Automatic_Mode',
+    nodeId: 'ns=2;s=PLC_SIEMENS.CUTTING.LINE3.Automatic_Mode',
     name: 'Cutting',
     position: { top: '12%', left: '52%', width: '22%', height: '40%' },
-    unit: '°C'
+    unit: 'RPM'
   },
   spiraloven: {
-    nodeId: 'ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Automatic_Mode',
+    nodeId: 'ns=2;s=PLC_SIEMENS.SPIRAL_OVEN.LINE4.Automatic_Mode',
     name: 'Spiral Oven',
     position: { top: '18%', left: '76%', width: '20%', height: '35%' },
     unit: '°C'
   },
   spiralcooling: {
-    nodeId: 'ns=2;s=PLC_SIEMENS.BINDER_2.LINE2.Automatic_Mode',
+    nodeId: 'ns=2;s=PLC_SIEMENS.SPIRAL_COOLING.LINE5.Automatic_Mode',
     name: 'Spiral Cooling',
     position: { top: '48%', left: '76%', width: '20%', height: '35%' },
     unit: '°C'
@@ -34,8 +34,7 @@ const MACHINE_CONFIG = {
 
 class MachineStatusService {
   constructor() {
-    this.baseURL = 'http://localhost:3001'; // ใช้ URL ตรงๆ
-    console.log('API Base URL:', this.baseURL); // เราะ่ม log
+    this.baseURL = ''; // ใช้ relative URL เลือนผ่าน proxy
     this.opcServerUrl = 'opc.tcp://192.168.1.115:49320';
     this.subscribers = new Set();
     this.currentStatus = {};
@@ -236,6 +235,8 @@ class MachineStatusService {
 // Export singleton instance
 const machineStatusService = new MachineStatusService();
 export default machineStatusService;
+
+
 
 
 

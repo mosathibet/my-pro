@@ -108,7 +108,7 @@ const RealtimeChart = ({ darkMode }) => {
     setConnectionStatus('Connecting...');
     
     try {
-      wsRef.current = new WebSocket('ws://localhost:8080');
+      wsRef.current = new WebSocket('ws://localhost:3001');
       
       wsRef.current.onopen = () => {
         console.log('WebSocket connected');
@@ -692,6 +692,7 @@ const RealtimeChart = ({ darkMode }) => {
 };
 
 export default RealtimeChart;
+
 
 
 
